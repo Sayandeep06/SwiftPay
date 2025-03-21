@@ -1,4 +1,8 @@
-const {JWT_SECRET} = require("./config")
+import dotenv from "dotenv";
+dotenv.config();
+
+
+const JWT_SECRET = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken")
 import { Request, Response, NextFunction } from "express"
 

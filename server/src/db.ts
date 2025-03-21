@@ -1,5 +1,10 @@
 import mongoose from 'mongoose'
-const {URL} = require("./config")
+import dotenv from "dotenv";
+dotenv.config();
+
+
+//@ts-ignore
+const URL: string= process.env.URL as string;
 mongoose.connect(URL);
 
 const userSchema = new mongoose.Schema({

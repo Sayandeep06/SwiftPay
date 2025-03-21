@@ -1,9 +1,12 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 const express = require('express')
 const router = express.Router();
 const mongoose = require('mongoose')
 import {Request, Response} from 'express'
 import { Account } from '../db';
-const {JWT} = require("../config")
+const JWT = process.env.JWT_SECRET;
 const jwt = require("jsonwebtoken");
 const {authMiddleware} = require('../middleware')
 const zod = require('zod');
