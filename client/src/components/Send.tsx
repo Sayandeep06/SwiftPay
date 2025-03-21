@@ -5,8 +5,8 @@ const SendMoney = ({ toUserId, setToUserId }) => {
   const [amount, setAmount] = useState("");
 
   const handleTransfer = async () => {
-    if (!toUserId) {
-      alert("No recipient selected.");
+    if (!toUserId || amount == "") {
+      alert("No recipient selected or no amount selected");
       return;
     }
 
@@ -25,7 +25,7 @@ const SendMoney = ({ toUserId, setToUserId }) => {
       
       if (response.status === 200) {
         alert("Transfer successful!");
-        setToUserId(null); // Hide SendMoney component after success
+        setToUserId(null); 
       } else {
         //@ts-ignore
         alert(response.data.message || "Transfer failed");
@@ -37,7 +37,7 @@ const SendMoney = ({ toUserId, setToUserId }) => {
   };
 
   return (
-    <div className="flex h-screen w-screen justify-center items-center bg-[#888a89]">
+    <div className="flex max-w-full h-screen w-screen justify-center items-center bg-[#888a89]">
       <div className="flex flex-col rounded-md shadow-md shadow-gray-600 bg-slate-100 w-80 h-90 p-2">
         <div className="font-bold text-gray-800 py-2 text-2xl flex items-center justify-center">
           Send Money

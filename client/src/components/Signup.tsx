@@ -44,7 +44,15 @@ const Signup = () => {
         <h3>Email</h3>
         <input placeholder='johndoe@example.com' className='w-full border rounded-md border-gray-400 p-1' onChange={(e)=>setUsername(e.target.value)}></input>
         <h3>Password</h3>
-        <input type="password" placeholder='' className='w-full border rounded-md border-gray-400 p-1' onChange={(e)=>setPassword(e.target.value)}></input>
+        <input
+          type="password"
+          placeholder=""
+          className="w-full border rounded-md border-gray-400 p-1"
+          onChange={(e) => setPassword(e.target.value)}
+          onKeyDown={(event: React.KeyboardEvent<HTMLInputElement>) => {
+            if (event.key === "Enter") handleSubmit();
+          }}
+        />
         <div className="mt-3" onClick={()=>handleSubmit()}><Button>Sign Up</Button></div>
         <div className="flex items-center justify-center">
           <p>Already have an account? </p> <span onClick={()=> navigate("/signin")} className="underline cursor-pointer">Login</span>
