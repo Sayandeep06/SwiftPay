@@ -100,7 +100,7 @@ const Dashboard= () => {
                   {user.firstname} {user.lastname}
                 </span>
                 <button
-                  className="bg-black rounded-md text-white px-4 py-2"
+                  className="bg-black rounded-md text-white px-4 py-2 cursor-pointer"
                   onClick={() =>{setToUserId(user._id)
                   }}
                 >
