@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+const URL = import.meta.env.VITE_API_URL;
 //@ts-ignore
 const SendMoney = ({ toUserId, setToUserId }) => {
   const [amount, setAmount] = useState("");
@@ -18,7 +19,7 @@ const SendMoney = ({ toUserId, setToUserId }) => {
       }
       
       const response = await axios.post(
-        "http://localhost:3000/api/v1/account/transfer",
+        `${URL}/api/v1/account/transfer`,
         { to: toUserId, amount: Number(amount) },
         { headers: { Authorization: token } }
       );

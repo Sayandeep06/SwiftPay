@@ -9,7 +9,7 @@ interface User {
   firstname: string;
   lastname: string;
 }
-
+const URL = import.meta.env.VITE_API_URL;
 
 
 const Dashboard= () => {
@@ -43,7 +43,7 @@ const Dashboard= () => {
 
   const fetchBalance = async (token: string) => {
     try {
-      const response = await axios.get("http://localhost:3000/api/v1/account/balance", {
+      const response = await axios.get(`${URL}/api/v1/account/balance`, {
         headers: { Authorization: token },
       });
 
@@ -59,7 +59,7 @@ const Dashboard= () => {
   const fetchUsers = async (token: string) => {
     try {
       const response = await axios.get<{ users: User[] }>(
-        "http://localhost:3000/api/v1/user",
+        `${URL}/api/v1/user`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setUsers(response.data.users);
