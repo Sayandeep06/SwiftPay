@@ -1,10 +1,11 @@
 import express from 'express';
 import { Request, Response } from 'express';
 const router = express.Router();
-const User = require('../db')
+const {User}= require('../db')
+const {Account} = require('../db')
 const zod = require('zod')
 const jwt = require("jsonwebtoken");
-const {JWT} = require("../config")
+import { JWT_SECRET } from '../config';
 const {authMiddleware} = require("../middleware")
 
 const signupBody = zod.object({
@@ -17,7 +18,7 @@ const signupBody = zod.object({
 router.post('/signup', async (req: Request, res: Response): Promise<any> =>{
      try{    
         const success = signupBody.safeParse(req.body)
-        if(!success){
+        if (!success.success) {
             return res.status(411).json({
                 message: "Incorrect inputs"
             })
@@ -27,7 +28,7 @@ router.post('/signup', async (req: Request, res: Response): Promise<any> =>{
         });
         if(exits){
             return res.json({
-                message: "User already exits"
+                message: "User already exists"
             })
         }
         const user = await User.create({
@@ -37,15 +38,22 @@ router.post('/signup', async (req: Request, res: Response): Promise<any> =>{
             lastname: req.body.lastname
         })
         const userId = user._id;
+        await Account.create({
+            userId,
+            balance: Math.random()*10000 +1
+        })
         const token = jwt.sign({
             userId
-        }, JWT)
-        res.json({
+        }, JWT_SECRET)
+        res.status(201).json({
             message: "User created",
             token: token
         })
     }catch(e){
-        res.json({e})
+        res.json({
+            //@ts-ignore
+            error: e.message
+        })
     }
 
 })
@@ -58,27 +66,29 @@ const signinBody = zod.object({
 router.post('/signin', async (req: Request, res: Response): Promise<any> =>{
 
     try{    
-        const {success} = signinBody.safeParse(req.body);
-        if(!success){
+        const success = signinBody.safeParse(req.body);
+        if(!success.success){
             return res.status(411).json({
                 message: "Incorrect inputs"
             }) 
         }
-        const user = await User.findone({
+        const user = await User.findOne({
             username: req.body.username, 
             password: req.body.password
         });
+        if(!user)   return res.status(401).json({ message: "Invalid inputs"});
         if(user){
             const token = jwt.sign({
                 userId: user._id
-            }, JWT)
-            res.json({
+            }, JWT_SECRET)
+            res.status(200).json({
                 token: token
             })
         }
     }catch(e){
         res.json({
-            e
+            //@ts-ignore
+            error: e.message
         })
     }
 }) 
@@ -90,8 +100,8 @@ const updateBody = zod.object({
 })
 
 router.put('/', authMiddleware, async (req, res): Promise<any> =>{
-    const {success} = updateBody.safeparse(req.body)
-    if(!success){
+    const success = updateBody.safeParse(req.body)
+    if(!success.success){
         return res.json({
             message: "Error while updating info"
         })
@@ -111,11 +121,11 @@ router.get('/bulk', async (req, res) =>{
     
     const users = await User.find({
         $or: [{
-            firstName: {
+            firstname: {
                 "$regex": param
             }
         }, {
-            lastName: {
+            lastname: {
                 "$regex": param
             }
         }]
@@ -124,11 +134,28 @@ router.get('/bulk', async (req, res) =>{
         //@ts-ignore
         user: users.map(user=>({
             username: user.username,
-            firstName: user.firstname,
-            lastName: user.lastName,
+            firstname: user.firstname,
+            lastname: user.lastname,
             _id: user._id
         }))
     })
 })
 
-module.exports = router;
+router.get('/', async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json({
+            //@ts-ignore
+            users: users.map(user => ({
+                username: user.username,
+                firstname: user.firstname,
+                lastname: user.lastname,
+                _id: user._id  
+            }))
+        });
+    } catch (error) {
+        res.status(500).json({ error: 'Something went wrong' });
+    }
+});
+
+export default router;
