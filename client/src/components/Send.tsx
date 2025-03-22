@@ -38,7 +38,7 @@ const SendMoney = ({ toUserId, setToUserId }) => {
   };
 
   return (
-    <div className="flex max-w-full h-screen w-screen justify-center items-center bg-[#888a89]">
+    <div className="flex max-w-full h-screen w-screen justify-center items-center bg-blue-100">
       <div className="flex flex-col rounded-md shadow-md shadow-gray-600 bg-slate-100 w-80 h-90 p-2">
         <div className="font-bold text-gray-800 py-2 text-2xl flex items-center justify-center">
           Send Money
@@ -60,13 +60,13 @@ const SendMoney = ({ toUserId, setToUserId }) => {
           <div className="mt-3">
             <button
               onClick={handleTransfer}
-              className="w-full bg-blue-600 text-white py-2 rounded-md"
+              className="w-full bg-blue-600 text-white py-2 rounded-md cursor-pointer"
             >
               Transfer
             </button>
             <button
               onClick={() => setToUserId(null)}
-              className="w-full bg-gray-400 text-white py-2 rounded-md mt-2"
+              className="w-full bg-gray-400 text-white py-2 rounded-md mt-2 cursor-pointer"
             >
               Cancel
             </button>
